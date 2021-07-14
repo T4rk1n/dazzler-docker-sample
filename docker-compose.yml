@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./services/web
+    command: gunicorn app:app_factory --worker-class aiohttp.GunicornWebWorker --bind 0.0.0.0:8080 --workers 2
+    depends_on:
+      - redis
+    expose:
+      - 8080
+    environment:
+      REDIS_URL: redis://redis:6379/
+    volumes:
+      - assets:/home/app/web/assets
+  nginx:
+    build: ./services/nginx
+    ports:
+      - 8151:80
+    depends_on:
+      - web
+    volumes:
+      - assets:/home/app/web/assets
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    volumes:
+      - sessions:/data
+
+volumes:
+  assets:
+  sessions:

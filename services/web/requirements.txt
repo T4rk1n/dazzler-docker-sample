@@ -1,0 +1,3 @@
+dazzler[redis]>=0.6.1
+aiohttp[speedups]
+gunicorn
